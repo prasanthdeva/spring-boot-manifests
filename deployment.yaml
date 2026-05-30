@@ -6,7 +6,7 @@ metadata:
   labels:
     app: spring-boot-app
 spec:
-  replicas: 2
+  replicas: 1 # Perfect budget limit for your 1-node Mumbai cluster
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -22,34 +22,39 @@ spec:
     spec:
       containers:
       - name: spring-boot-container
-        image: your-dockerhub-username/spring-boot-cicd:placeholder # Updated by Jenkins
+        # CRITICAL FIX: Changed to match your exact Docker Hub space. 
+        # Jenkins automation matches this exact string prefix to insert the build numbers.
+        image: 8667848270/spring-boot-cicd:placeholder 
         ports:
         - containerPort: 8080
         
         env:
-        # Pulls from the public ConfigMap in Git
+        # Pulls basic environment settings from your public ConfigMap
         - name: SPRING_PROFILES_ACTIVE
           valueFrom:
             configMapKeyRef:
               name: spring-boot-config
               key: SPRING_PROFILES_ACTIVE
 
+        # Scaled down resource allocations perfectly optimized for a single e2-medium node
+        resources:
+          requests:
+            memory: "180Mi"
+            cpu: "100m"
+          limits:
+            memory: "300Mi"
+            cpu: "250m"
+
+        # Basic health checks tailored for your Hello World endpoints (no actuator required)
         livenessProbe:
           httpGet:
-            path: /actuator/health
+            path: /   
             port: 8080
-          initialDelaySeconds: 40
+          initialDelaySeconds: 20
           periodSeconds: 15
         readinessProbe:
           httpGet:
-            path: /actuator/health
+            path: /
             port: 8080
-          initialDelaySeconds: 30
+          initialDelaySeconds: 15
           periodSeconds: 10
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "300m"
