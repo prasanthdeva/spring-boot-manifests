@@ -27,14 +27,6 @@ spec:
         image: 8667848270/spring-boot-cicd:21
         ports:
         - containerPort: 8080
-        
-        env:
-        # Pulls basic environment settings from your public ConfigMap
-        - name: SPRING_PROFILES_ACTIVE
-          valueFrom:
-            configMapKeyRef:
-              name: spring-boot-config
-              key: SPRING_PROFILES_ACTIVE
 
         # Scaled down resource allocations perfectly optimized for a single e2-medium node
         resources:
