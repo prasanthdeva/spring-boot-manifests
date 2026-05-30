@@ -24,7 +24,7 @@ spec:
       - name: spring-boot-container
         # CRITICAL FIX: Changed to match your exact Docker Hub space. 
         # Jenkins automation matches this exact string prefix to insert the build numbers.
-        image: 8667848270/spring-boot-cicd:placeholder 
+        image: 8667848270/spring-boot-cicd:20
         ports:
         - containerPort: 8080
         
